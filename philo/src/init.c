@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
+/*   By: lde-ross <lde-ross@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 17:30:04 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/09 20:28:11 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/10 11:05:33 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	init_threads(t_data *data)
 			perror("Failed to create thread");
 			return (1);
 		}
-		printf("Thread %d has started\n", i);
 		i++;
 	}	
 	return (0);
@@ -43,47 +42,61 @@ int	join_threads(t_data *data)
 		if (pthread_join(data->threads[i], NULL) != 0) {
             return (1);
         }
-        printf("Thread %d has finished execution\n", i);
 		i++;
 	}
 	return (0);
 }
 
-// t_philo	**init_philos(t_data *data)
-// {
+t_philo	**init_philos(t_data *data)
+{
+	t_philo	**philos;
+	int		i;
 	
-// }
+	philos = malloc(sizeof(t_philo*) * data->number_of_philosophers);
+	if (!philos)
+		return (NULL);
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		philos[i] = malloc(sizeof(t_philo));
+		if (!philos[i])
+			return (NULL);
+		philos[i]->index = i;
+		philos[i]->left_fork = i;
+		philos[i]->right_fork = (i + 1) % data->number_of_philosophers;
+		philos[i]->data = data;
+		i++;
+	}
+	return (philos);
+}
+
+void	init_mutex(t_data *data)
+{
+	int	i;
+
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
+	pthread_mutex_init(&data->mutex, NULL);
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		pthread_mutex_init(&data->forks[i], NULL);
+		i++;
+	}
+}
 
 t_data	init_data(int argc, char *argv[])
 {
 	t_data	data;
-	int		i;
 
 	data.number_of_philosophers = ft_atoi(argv[1]);
 	data.time_to_die = ft_atoi(argv[2]);
 	data.time_to_eat = ft_atoi(argv[3]);
 	data.time_to_sleep = ft_atoi(argv[4]);
 	data.number_of_meals = -1;
+	data.start = get_time();
 	if (argc == 6)
 		data.number_of_meals = ft_atoi(argv[5]);
-	i = 0;
-	data.forks = malloc(sizeof(pthread_mutex_t) * data.number_of_philosophers);
-	data.philosophers = malloc(sizeof(t_philo*) * data.number_of_philosophers);
-	while (i < data.number_of_philosophers)
-	{
-		data.philosophers[i] = malloc(sizeof(t_philo));
-		data.philosophers[i]->index = i;
-		data.philosophers[i]->left_fork = i;
-		data.philosophers[i]->right_fork = (i + 1) % data.number_of_philosophers;
-		data.philosophers[i]->data = &data;
-		i++;
-	}
-	pthread_mutex_init(&data.mutex, NULL);
-	i = 0;
-	while (i < data.number_of_philosophers)
-	{
-		pthread_mutex_init(&data.forks[i], NULL);
-		i++;
-	}
+	data.philosophers = init_philos(&data);
+	init_mutex(&data);
 	return (data);
 }

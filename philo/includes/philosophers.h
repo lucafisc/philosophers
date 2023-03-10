@@ -33,6 +33,7 @@ typedef struct s_data
 	int time_to_sleep;
 	int number_of_philosophers;
 	int number_of_meals;
+	u_int64_t start;
 	t_philo **philosophers;
 	pthread_t *threads;
 	pthread_mutex_t	mutex;
@@ -47,6 +48,7 @@ void		*routine();
 int			join_threads(t_data *data);
 void		destroy_philo(t_data *data);
 u_int64_t	get_time(void);
+u_int64_t	get_time_elapsed(u_int64_t start);
 
 
 // utils
