@@ -6,7 +6,7 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:56:57 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 13:37:58 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 14:19:39 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ void	philosopher_eat(t_philo *philo)
 
 void	philosopher_sleep(t_philo *philo)
 {
-	print_message(SLEEP, philo);
 	pthread_mutex_unlock(&philo->data->forks[philo->first_fork]);
 	pthread_mutex_unlock(&philo->data->forks[philo->second_fork]);
+	print_message(SLEEP, philo);
 	philosopher_pause(philo->data->time_to_sleep, philo->data);
 }
 
@@ -62,10 +62,12 @@ void	philosopher_think(t_philo *philo)
 	time_left /= 2; // basically how much time he has left divided by two
 	if (time_left < 0)
 		time_left = 0;
-	if (time_left > 200)
-		time_left = 0;
+	// if (time_left > 200)
+	// 	time_left = 50;
 	// if more than x set it to a limit
 	// think ?
+	time_left = 0;
+	printf("thiking for %lu \n", time_left);
 	print_message(THINK, philo);
 	//printf("**thinking for %lu**\n", time_left);
 	philosopher_pause(time_left, philo->data);
@@ -83,6 +85,8 @@ void *routine(void *arg)
 	// if philo is par -> go think
 	
 	// loop
+	if (philo->index % 2 == 0)
+		usleep(philo->data->time_to_die / 2);
 	while (!should_terminate(philo->data))
 	{
 		if (philo->data->number_of_meals >= 1 && philo->times_ate >= philo->data->number_of_meals)
