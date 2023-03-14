@@ -7,7 +7,7 @@ NAME = philo
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(NAME)
+	$(CC) $(OBJECTS) -fsanitize=thread -o $(NAME)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
