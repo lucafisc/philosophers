@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
+/*   By: lde-ross <lde-ross@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 15:52:18 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/13 18:25:18 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:31:28 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,11 @@ void	monitor_philosophers(t_data *data)
 
 	full = true;
 	i = 0;
-	//printf("number of meals %d\n", data->number_of_meals);
 	while (i < data->number_of_philosophers)
 	{
 		if (is_dead(philos[i]))
 		{
-			printf("*\n%lums %d died\n*\n",get_time_elapsed(data->start), philos[i]->index);
+			print_message(DIE, philos[i]);
 			toggle_terminate(data); //lock ?
 		}
 		if (data->number_of_meals >= 1 && philos[i]->times_ate < data->number_of_meals)
@@ -76,7 +75,6 @@ void	*monitor(void *arg)
 	data = (t_data *)arg;
 	if (data->number_of_meals == 0)
 		return (NULL); //?
-
 	// set data->should stop to false (?)
 	// delay (?)
 	while (!should_terminate(data))
@@ -84,6 +82,6 @@ void	*monitor(void *arg)
 		monitor_philosophers(data);
 		usleep(1000);
 	}
-	printf("*\nMonitor stopped running*\n*\n");
+	//printf("*\nMonitor stopped running*\n*\n");
 	return (NULL);
 }

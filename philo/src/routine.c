@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
+/*   By: lde-ross <lde-ross@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:56:57 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/13 20:25:23 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:37:58 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,31 +23,20 @@ void	philosopher_pause(unsigned long time_to_pause, t_data *data)
 	}
 }
 
-///////is simu running function
-// check for "data->is running" (locked)
-//
-
 void	philosopher_eat(t_philo *philo)
 {
 	if (!should_terminate(philo->data))
 	{
-	pthread_mutex_lock(&philo->data->get_fork_mutex);
 	pthread_mutex_lock(&philo->data->forks[philo->first_fork]);
 	print_message(FORK, philo);
 	pthread_mutex_lock(&philo->data->forks[philo->second_fork]);
 	print_message(FORK, philo);
-	pthread_mutex_unlock(&philo->data->get_fork_mutex);
 	print_message(EAT, philo);
 	}
-		
-	//printf("%lums %d is eating\n",get_time_elapsed(philo->data->start), philo->index);
 	philo->last_meal = get_time_elapsed(philo->data->start); //locked ?
 	philosopher_pause(philo->data->time_to_eat, philo->data);
 	if (!should_terminate(philo->data))
-	{
-	philo->times_ate += 1; //if sim is running? (locked)
-	//printf("[%d] ate %d times. last meal was: %lums\n", philo->index, philo->times_ate, philo->last_meal);
-	}
+		philo->times_ate += 1; //if sim is running? (locked)
 }
 
 void	philosopher_sleep(t_philo *philo)
@@ -67,18 +56,18 @@ void	philosopher_think(t_philo *philo)
 	//printf("philo[%d] time since last meal: %lu\n", philo->index, philo->last_meal);
 	//printf("get_time_elapsed: %lums - last_meal: %lums\n", get_time_elapsed(philo->data->start), philo->last_meal);
 	time_left = philo->data->time_to_die - philo->data->time_to_eat - time_since_last_meal;
-	printf("**%d time left = time_to_die: %lums - time to eat: %lums - last meal: %lums**\n",philo->index, philo->data->time_to_die, philo->data->time_to_eat, time_since_last_meal);
+	//printf("**%d time left = time_to_die: %lums - time to eat: %lums - last meal: %lums**\n",philo->index, philo->data->time_to_die, philo->data->time_to_eat, time_since_last_meal);
 	//printf("time_left = time_to_die: %lums - time_to_eat: %lums - time_since_last_meal: %lums\n", philo->data->time_to_die ,philo->data->time_to_eat , time_since_last_meal);
 	
 	time_left /= 2; // basically how much time he has left divided by two
 	if (time_left < 0)
 		time_left = 0;
 	if (time_left > 200)
-		time_left = 50;
+		time_left = 0;
 	// if more than x set it to a limit
 	// think ?
 	print_message(THINK, philo);
-	printf("**thinking for %lu**\n", time_left);
+	//printf("**thinking for %lu**\n", time_left);
 	philosopher_pause(time_left, philo->data);
 }
 

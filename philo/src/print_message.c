@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_message.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
+/*   By: lde-ross <lde-ross@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 18:34:36 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/13 19:05:52 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:30:01 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,7 @@ void print_message(int message, t_philo *philo)
 			printf("%s%ums %s%d is sleeping%s\n",BWHT, timestamp, BBLU, philo->index, RESET);
 		else if (message == THINK)
 			printf("%s%ums %s%d is thinking%s\n",BWHT, timestamp, BYEL, philo->index, RESET);
+		else if (message == DIE)
+			printf("%s%ums %s%d died%s\n",BWHT, timestamp, BRED, philo->index, RESET);
 	}
 }

@@ -13,6 +13,7 @@
 # define EAT 1
 # define SLEEP 2
 # define THINK 3
+# define DIE 4
 
 
 typedef struct s_data	t_data;
