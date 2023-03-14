@@ -6,7 +6,7 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 18:07:31 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 20:00:53 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:39:28 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ void		destroy_philo(t_data *data);
 u_int64_t	get_time(void);
 u_int64_t	get_time_elapsed(u_int64_t start);
 void		*monitor(void *arg);
+void		*one_philosopher(t_philo *philo);
 t_bool		should_terminate(t_data *data);
+void		toggle_terminate(t_data *data);
+t_bool		is_dead(t_philo *philo);
 void		print_message(int message, t_philo *philo);
 int			print_error(void);
 t_bool		is_full(t_philo *philo);

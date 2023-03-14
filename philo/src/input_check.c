@@ -6,7 +6,7 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 14:52:26 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 18:18:40 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:20:04 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,7 @@ t_bool	is_valid_input(int argc, char **argv)
 			return (false);
 		i++;
 	}
+	if (ft_atoi(argv[1]) <= 0)
+		return (false);
 	return (true);
 }

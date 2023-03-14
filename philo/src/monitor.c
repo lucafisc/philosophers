@@ -6,42 +6,11 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 15:52:18 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 19:43:26 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:39:10 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
-
-t_bool	should_terminate(t_data *data)
-{
-	t_bool	should_terminate;
-
-	pthread_mutex_lock(&data->terminate_mutex);
-	should_terminate = data->terminate;
-	pthread_mutex_unlock(&data->terminate_mutex);
-	return (should_terminate);
-}
-
-t_bool	is_dead(t_philo *philo)
-{
-	u_int64_t	current_time;
-	t_bool		is_dead;
-
-	is_dead = false;
-	current_time = get_time_elapsed(philo->data->start);
-	pthread_mutex_lock(&philo->data->last_meal_mutex);
-	if (current_time - philo->last_meal > philo->data->time_to_die)
-		is_dead = true;
-	pthread_mutex_unlock(&philo->data->last_meal_mutex);
-	return (is_dead);
-}
-
-void	toggle_terminate(t_data *data)
-{
-	pthread_mutex_lock(&data->terminate_mutex);
-	data->terminate = true;
-	pthread_mutex_unlock(&data->terminate_mutex);
-}
 
 void	monitor_philosophers(t_data *data)
 {

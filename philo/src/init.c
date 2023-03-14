@@ -6,7 +6,7 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 17:30:04 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 19:55:16 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:42:56 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,10 @@ int	init_threads(t_data *data)
 		}
 		i++;
 	}
-	if (data->number_of_philosophers > 1)
+	if (pthread_create(&data->monitor, NULL, &monitor, data) != 0)
 	{
-		if (pthread_create(&data->monitor, NULL, &monitor, data) != 0)
-		{
-			printf("Failed to create thread\n");
-			return (2);
-		}
+		printf("Failed to create thread\n");
+		return (2);
 	}
 	return (0);
 }

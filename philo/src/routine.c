@@ -6,7 +6,7 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:56:57 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 19:46:24 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:35:32 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ void	philosopher_think(t_philo *philo)
 	time_left = philo->data->time_to_die
 		- philo->data->time_to_eat - time_since_last_meal;
 	time_left /= 4;
-	if (time_left < 0 || time_left > 100)
+	if (time_left < 0
+		|| time_left > philo->data->time_to_eat + philo->data->time_to_sleep)
 		time_left = 0;
 	print_message(THINK, philo);
 	philosopher_pause(time_left, philo->data);
@@ -75,7 +76,8 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	if (philo->data->number_of_meals == 0 || philo->data->time_to_die == 0)
 		return (NULL);
-	// if only one philo -> return separate function call
+	else if (philo->data->number_of_philosophers == 1)
+		return (one_philosopher(philo));
 	if (philo->index % 2 == 0)
 		usleep(philo->data->time_to_die / 2);
 	while (!should_terminate(philo->data))
