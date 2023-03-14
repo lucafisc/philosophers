@@ -6,15 +6,15 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 17:30:04 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/13 19:08:24 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 19:55:16 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-int init_threads(t_data *data)
+int	init_threads(t_data *data)
 {
-	int i;
+	int	i;
 
 	data->threads = malloc(sizeof(pthread_t) * data->number_of_philosophers);
 	if (!data->threads)
@@ -22,9 +22,10 @@ int init_threads(t_data *data)
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
-		if (pthread_create(&data->threads[i], NULL, &routine, data->philosophers[i]) != 0)
+		if (pthread_create(&data->threads[i], NULL,
+				&routine, data->philosophers[i]) != 0)
 		{
-			perror("Failed to create thread");
+			printf("Failed to create thread\n");
 			return (1);
 		}
 		i++;
@@ -33,16 +34,16 @@ int init_threads(t_data *data)
 	{
 		if (pthread_create(&data->monitor, NULL, &monitor, data) != 0)
 		{
-			perror("Failed to create thread");
-			return (1);
+			printf("Failed to create thread\n");
+			return (2);
 		}
 	}
 	return (0);
 }
 
-int join_threads(t_data *data)
+int	join_threads(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->number_of_philosophers)
@@ -58,7 +59,7 @@ int join_threads(t_data *data)
 	return (0);
 }
 
-t_philo **init_philos(t_data *data)
+t_philo	**init_philos(t_data *data)
 {
 	t_philo	**philos;
 	int		i;
@@ -66,8 +67,8 @@ t_philo **init_philos(t_data *data)
 	philos = malloc(sizeof(t_philo *) * data->number_of_philosophers);
 	if (!philos)
 		return (NULL);
-	i = 0;
-	while (i < data->number_of_philosophers)
+	i = -1;
+	while (++i < data->number_of_philosophers)
 	{
 		philos[i] = malloc(sizeof(t_philo));
 		if (!philos[i])
@@ -75,7 +76,7 @@ t_philo **init_philos(t_data *data)
 		philos[i]->index = i;
 		philos[i]->first_fork = i;
 		philos[i]->second_fork = (i + 1) % data->number_of_philosophers;
-		if (i % 2 == 0)
+		if (i % 2 != 0)
 		{
 			philos[i]->first_fork = philos[i]->second_fork;
 			philos[i]->second_fork = i;
@@ -83,17 +84,18 @@ t_philo **init_philos(t_data *data)
 		philos[i]->times_ate = 0;
 		philos[i]->last_meal = get_time_elapsed(data->start);
 		philos[i]->data = data;
-		i++;
 	}
 	return (philos);
 }
 
-void init_mutex(t_data *data)
+void	init_mutex(t_data *data)
 {
-	int i;
+	int	i;
 
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
-	pthread_mutex_init(&data->get_fork_mutex, NULL);
+	data->forks = malloc(sizeof(pthread_mutex_t)
+			* data->number_of_philosophers);
+	pthread_mutex_init(&data->last_meal_mutex, NULL);
+	pthread_mutex_init(&data->times_ate_mutex, NULL);
 	pthread_mutex_init(&data->terminate_mutex, NULL);
 	i = 0;
 	while (i < data->number_of_philosophers)
@@ -103,10 +105,10 @@ void init_mutex(t_data *data)
 	}
 }
 
-t_data *init_data(int argc, char *argv[])
+t_data	*init_data(int argc, char *argv[])
 {
-	t_data *data;
-	
+	t_data	*data;
+
 	data = malloc(sizeof(t_data));
 	if (data == NULL)
 		return (NULL);

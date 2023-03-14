@@ -3,24 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-ross <lde-ross@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 15:52:18 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 13:31:28 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 19:43:26 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-////// set data is running function
-/// (locked)
-//  (unlocked)
-
-//////// paralel thread if more than 1 philo
 #include "../includes/philosophers.h"
 
 t_bool	should_terminate(t_data *data)
 {
 	t_bool	should_terminate;
-	
+
 	pthread_mutex_lock(&data->terminate_mutex);
 	should_terminate = data->terminate;
 	pthread_mutex_unlock(&data->terminate_mutex);
@@ -30,12 +25,15 @@ t_bool	should_terminate(t_data *data)
 t_bool	is_dead(t_philo *philo)
 {
 	u_int64_t	current_time;
+	t_bool		is_dead;
 
+	is_dead = false;
 	current_time = get_time_elapsed(philo->data->start);
-	//printf("current time: %lums - last meal %lums > %lums ?\n", current_time, philo->last_meal, philo->data->time_to_die);
+	pthread_mutex_lock(&philo->data->last_meal_mutex);
 	if (current_time - philo->last_meal > philo->data->time_to_die)
-		return (true);
-	return (false);
+		is_dead = true;
+	pthread_mutex_unlock(&philo->data->last_meal_mutex);
+	return (is_dead);
 }
 
 void	toggle_terminate(t_data *data)
@@ -48,9 +46,10 @@ void	toggle_terminate(t_data *data)
 void	monitor_philosophers(t_data *data)
 {
 	t_bool	full;
-	int	i;
-	t_philo **philos = data->philosophers;
+	int		i;
+	t_philo	**philos;
 
+	philos = data->philosophers;
 	full = true;
 	i = 0;
 	while (i < data->number_of_philosophers)
@@ -58,30 +57,27 @@ void	monitor_philosophers(t_data *data)
 		if (is_dead(philos[i]))
 		{
 			print_message(DIE, philos[i]);
-			toggle_terminate(data); //lock ?
+			toggle_terminate(data);
 		}
-		if (data->number_of_meals >= 1 && philos[i]->times_ate < data->number_of_meals)
+		if (!is_full(philos[i]))
 			full = false;
 		i++;
 	}
 	if (data->number_of_meals >= 1 && full)
-		toggle_terminate(data); // lock ?
+		toggle_terminate(data);
 }
 
 void	*monitor(void *arg)
 {
 	t_data	*data;
-	
+
 	data = (t_data *)arg;
 	if (data->number_of_meals == 0)
-		return (NULL); //?
-	// set data->should stop to false (?)
-	// delay (?)
+		return (NULL);
 	while (!should_terminate(data))
 	{
 		monitor_philosophers(data);
 		usleep(1000);
 	}
-	//printf("*\nMonitor stopped running*\n*\n");
 	return (NULL);
 }

@@ -1,49 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input_check.c                                      :+:      :+:    :+:   */
+/*   philo_check.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/07 14:52:26 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/14 18:18:40 by lde-ross         ###   ########.fr       */
+/*   Created: 2023/03/14 19:27:51 by lde-ross          #+#    #+#             */
+/*   Updated: 2023/03/14 19:32:05 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-t_bool	is_valid_number(char *str)
+t_bool	is_full(t_philo *philo)
 {
-	int	i;
+	t_bool	full;
+	int		times_ate;
 
-	i = 0;
-	if (ft_is_sign(str[i]))
-	{
-		if (str[i] == '-')
-			return (false);
-		i++;
-	}
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (false);
-		i++;
-	}
-	return (true);
-}
-
-t_bool	is_valid_input(int argc, char **argv)
-{
-	int	i;
-
-	if (!(argc == 5 || argc == 6))
-		return (false);
-	i = 1;
-	while (i < argc)
-	{
-		if (!is_valid_number(argv[i]))
-			return (false);
-		i++;
-	}
-	return (true);
+	full = false;
+	pthread_mutex_lock(&philo->data->times_ate_mutex);
+	times_ate = philo->times_ate;
+	pthread_mutex_unlock(&philo->data->times_ate_mutex);
+	if (philo->data->number_of_meals >= 1
+			&& times_ate >= philo->data->number_of_meals)
+			full = true;
+	return (full);
 }

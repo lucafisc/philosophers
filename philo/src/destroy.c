@@ -6,7 +6,7 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 19:01:43 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/10 17:50:56 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:02:47 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ void	destroy_philo(t_data *data)
 		pthread_mutex_destroy(&data->forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(&data->get_fork_mutex);
+	pthread_mutex_destroy(&data->last_meal_mutex);
+	pthread_mutex_destroy(&data->times_ate_mutex);
 	pthread_mutex_destroy(&data->terminate_mutex);
 	free(data->forks);
 	free(data->philosophers);
 	free(data->threads);
+	free(data);
 }

@@ -6,7 +6,7 @@
 /*   By: lde-ross <lde-ross@student.42berlin.de     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 14:12:36 by lde-ross          #+#    #+#             */
-/*   Updated: 2023/03/13 15:28:37 by lde-ross         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:03:17 by lde-ross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,11 @@ int	main(int argc, char *argv[])
 {
 	t_data	*data;
 
-	if (is_valid_input(argc, argv))
-	{
-		data = init_data(argc, argv);
-		init_threads(data);
-		join_threads(data);
-		destroy_philo(data);
-		free(data);
-	}
-	else
-		printf("error");
+	if (!is_valid_input(argc, argv))
+		return (print_error());
+	data = init_data(argc, argv);
+	if (data == NULL || init_threads(data) != 0 || join_threads(data) != 0)
+		return (print_error());
+	destroy_philo(data);
 	return (0);
 }

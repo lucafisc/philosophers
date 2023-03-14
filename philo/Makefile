@@ -1,8 +1,8 @@
-FILES = ./src/main.c ./src/input_check.c ./src/init.c ./src/utils.c ./src/routine.c ./src/destroy.c ./src/time.c ./src/monitor.c ./src/print_message.c
+FILES = ./src/main.c ./src/input_check.c ./src/init.c ./src/utils.c ./src/routine.c ./src/destroy.c ./src/time.c ./src/monitor.c ./src/print_message.c ./src/philo_check.c
 OBJECTS = $(FILES:.c=.o)
 CC = cc
-CFLAGS = -Wall -Wextra -Werror 
-NAME = philosophers
+CFLAGS = -Wall -Wextra -Werror
+NAME = philo
 
 all: $(NAME)
 
